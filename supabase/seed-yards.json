@@ -1,21 +1,21 @@
 {
-  "generated_at": "2026-08-02T01:35:30.794Z",
+  "generated_at": "2026-08-02T01:38:48.203Z",
   "counts": {
-    "total": 10,
-    "withPhone": 9,
-    "pct": 90,
+    "total": 12,
+    "withPhone": 11,
+    "pct": 92,
     "bySource": {
-      "verified_web": 1,
+      "verified_web": 3,
       "verified_web+heavytruckparts.net": 2,
       "osm": 5,
       "heavytruckparts.net": 2
     },
     "byType": {
-      "hd_salvage": 5,
+      "hd_salvage": 7,
       "oem_dealer": 5
     },
     "byCounty": {
-      "unknown": 6,
+      "unknown": 8,
       "Bartow": 1,
       "Cobb": 1,
       "Fulton": 1,
@@ -30,8 +30,8 @@
       "state": "GA",
       "zip": "30294",
       "county": null,
-      "lat": null,
-      "lng": null,
+      "lat": 33.6116689,
+      "lng": -84.3091543,
       "phone": "404-366-4843",
       "website": "https://richardkernstruckparts.com/",
       "source": "verified_web",
@@ -49,8 +49,8 @@
       "state": "GA",
       "zip": "30120",
       "county": "Bartow",
-      "lat": null,
-      "lng": null,
+      "lat": 34.1597749,
+      "lng": -84.7884408,
       "phone": "770-382-1595",
       "website": "https://cresttruckparts.com/",
       "source": "verified_web+heavytruckparts.net",
@@ -83,6 +83,44 @@
       "yard_type": "hd_salvage",
       "published_listing_count": 1645,
       "publishes_online": true
+    },
+    {
+      "name": "AFS Diesel Truck & Body",
+      "address": "3939 Moreland Avenue",
+      "city": "Conley",
+      "state": "GA",
+      "zip": "30288",
+      "county": null,
+      "lat": 33.6477207,
+      "lng": -84.3293976,
+      "phone": "404-596-4395",
+      "website": "https://www.associatedfuelsystems.com/",
+      "source": "verified_web",
+      "source_urls": [
+        "https://www.associatedfuelsystems.com/parts-department-services"
+      ],
+      "yard_type": "hd_salvage",
+      "published_listing_count": null,
+      "publishes_online": null
+    },
+    {
+      "name": "Simpson & Simpson LLC",
+      "address": "4290 Holly Springs Road",
+      "city": "Gillsville",
+      "state": "GA",
+      "zip": "30543",
+      "county": null,
+      "lat": null,
+      "lng": null,
+      "phone": "770-532-4013",
+      "website": "https://www.simpsonsusedtruckparts.com/",
+      "source": "verified_web",
+      "source_urls": [
+        "https://www.simpsonsusedtruckparts.com/used-commercial-truck-parts"
+      ],
+      "yard_type": "hd_salvage",
+      "published_listing_count": null,
+      "publishes_online": null
     },
     {
       "name": "Rush Truck Centers – Smyrna",
@@ -181,8 +219,8 @@
       "state": "GA",
       "zip": "30297",
       "county": "Clayton",
-      "lat": null,
-      "lng": null,
+      "lat": 33.6153386,
+      "lng": -84.3732459,
       "phone": "404-361-8785",
       "website": null,
       "source": "heavytruckparts.net",

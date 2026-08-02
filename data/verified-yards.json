@@ -9,7 +9,9 @@
     "website": "https://richardkernstruckparts.com/",
     "yard_type": "hd_salvage",
     "source": "verified_web",
-    "source_urls": ["https://richardkernstruckparts.com/"],
+    "source_urls": [
+      "https://richardkernstruckparts.com/"
+    ],
     "publishes_online": true,
     "_verified": "Phone, city and class-8 salvage focus confirmed on the company's own website 2026-08-02."
   },
@@ -23,7 +25,9 @@
     "website": "https://cresttruckparts.com/",
     "yard_type": "hd_salvage",
     "source": "verified_web",
-    "source_urls": ["https://cresttruckparts.com/"],
+    "source_urls": [
+      "https://cresttruckparts.com/"
+    ],
     "publishes_online": true,
     "_verified": "Name, full address and phone confirmed on the company's own website 2026-08-02."
   },
@@ -37,8 +41,40 @@
     "website": "https://hdtrs.com/",
     "yard_type": "hd_salvage",
     "source": "verified_web",
-    "source_urls": ["https://hdtrs.com/"],
+    "source_urls": [
+      "https://hdtrs.com/"
+    ],
     "publishes_online": true,
     "_verified": "Address, phone and on-site salvage yard confirmed on the company's own website 2026-08-02. Name matched to the HeavyTruckParts.net listing spelling so the two records dedupe."
+  },
+  {
+    "name": "AFS Diesel Truck & Body",
+    "address": "3939 Moreland Avenue",
+    "city": "Conley",
+    "state": "GA",
+    "zip": "30288",
+    "phone": "404-596-4395",
+    "website": "https://www.associatedfuelsystems.com/",
+    "yard_type": "hd_salvage",
+    "source": "verified_web",
+    "source_urls": [
+      "https://www.associatedfuelsystems.com/parts-department-services"
+    ],
+    "_verified": "Address, phone and an explicit Used Parts inventory (Cummins manifolds, Detroit valve covers, oil pans) plus reman components confirmed on the company's own website 2026-08-02. Clayton County."
+  },
+  {
+    "name": "Simpson & Simpson LLC",
+    "address": "4290 Holly Springs Road",
+    "city": "Gillsville",
+    "state": "GA",
+    "zip": "30543",
+    "phone": "770-532-4013",
+    "website": "https://www.simpsonsusedtruckparts.com/",
+    "yard_type": "hd_salvage",
+    "source": "verified_web",
+    "source_urls": [
+      "https://www.simpsonsusedtruckparts.com/used-commercial-truck-parts"
+    ],
+    "_verified": "Address, phone and used/rebuilt/salvaged HD truck parts from their own yard confirmed on the company's own website 2026-08-02. Hall County \u2014 seeder radius check decides scope."
   }
 ]
