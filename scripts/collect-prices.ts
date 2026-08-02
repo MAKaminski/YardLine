@@ -33,6 +33,16 @@ const CACHE = join(process.cwd(), '.cache', 'htp')
 
 const minutesArg = process.argv.find((a) => a.startsWith('--minutes='))
 const BUDGET_MS = (minutesArg ? parseInt(minutesArg.split('=')[1], 10) : 60) * 60_000
+
+/**
+ * --families=engines,transmissions lets a run concentrate on under-covered
+ * families. HTP's sitemap is dominated by body panels, so an even round-robin
+ * under-samples drivetrain — which is exactly what the census cares about.
+ */
+const familiesArg = process.argv.find((a) => a.startsWith('--families='))
+const ONLY_FAMILIES = familiesArg
+  ? familiesArg.split('=')[1].split(',').map((f) => f.trim().toLowerCase()).filter(Boolean)
+  : null
 const startedAt = Date.now()
 const timeLeft = () => BUDGET_MS - (Date.now() - startedAt)
 
@@ -58,7 +68,13 @@ const TARGET_FAMILIES: Array<{ family: string; re: RegExp }> = [
 ]
 
 function familyOf(partTypeSlug: string): string | null {
-  for (const t of TARGET_FAMILIES) if (t.re.test(partTypeSlug)) return t.family
+  for (const t of TARGET_FAMILIES) {
+    if (!t.re.test(partTypeSlug)) continue
+    if (ONLY_FAMILIES && !ONLY_FAMILIES.some((f) => t.family.toLowerCase().includes(f))) {
+      return null
+    }
+    return t.family
+  }
   return null
 }
 
@@ -336,8 +352,18 @@ async function main() {
     `[queue] ${queue.length} candidate pages across ${famCount} families / ${sellerCount} sellers`
   )
 
+  // Skip pages a previous run already fetched, so a re-run spends its whole
+  // budget on new ground instead of re-crawling.
+  const seenPath = join(CACHE, 'fetched.json')
+  const seen: Set<string> = new Set(
+    existsSync(seenPath) ? (JSON.parse(readFileSync(seenPath, 'utf8')) as string[]) : []
+  )
+  const before = queue.length
+  const pending = queue.filter((u) => !seen.has(u))
+  console.log(`[queue] ${pending.length} unfetched (${before - pending.length} already crawled)`)
+
   let fetched = 0
-  for (const u of queue) {
+  for (const u of pending) {
     if (timeLeft() < DELAY + 5000) {
       console.log(`[budget] time exhausted after ${fetched} pages`)
       break
@@ -349,10 +375,14 @@ async function main() {
       const html = await res.text()
       const parsed = parseItemPage(u, html)
       parsed.forEach(add)
+      seen.add(u)
       fetched++
       // Checkpoint as we go. An earlier run held everything in memory and only
       // wrote on exit, which meant interrupting it discarded the whole crawl.
-      if (fetched % 25 === 0) emit(true)
+      if (fetched % 25 === 0) {
+        emit(true)
+        writeFileSync(seenPath, JSON.stringify([...seen]))
+      }
       if (fetched % 10 === 0) {
         console.log(
           `[item] ${fetched} pages, ${listings.size} listings, ` +
@@ -364,6 +394,7 @@ async function main() {
     }
   }
 
+  writeFileSync(seenPath, JSON.stringify([...seen]))
   emit()
 }
 
