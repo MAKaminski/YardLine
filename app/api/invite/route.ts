@@ -15,6 +15,15 @@ import { createServerSupabase } from '@/lib/supabase/server'
  * If RESEND_API_KEY is unset the route returns a prefilled mailto: URL so the
  * rep can send from their own client. The feature is never blocked on config.
  */
+/**
+ * Reports only whether email sending is configured — never the key itself.
+ * The rep UI uses this to say "will send" vs "will open your mail app", and it
+ * is how we verify a Vercel env change actually reached the running deployment.
+ */
+export async function GET() {
+  return NextResponse.json({ configured: Boolean(process.env.RESEND_API_KEY) })
+}
+
 export async function POST(request: Request) {
   let body: { token?: string; email?: string; yardName?: string }
   try {
