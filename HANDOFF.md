@@ -131,19 +131,28 @@ app, taking another call, or losing signal will not lose answers.
 
 ## What the seeder found
 
-**10 in-scope yards, 9 with a phone number (90%), zero fabricated records.**
+**12 in-scope yards, 11 with a phone number (92%), zero fabricated records.**
 
-This is short of the 25-yard target, and the shortfall is itself the most
-useful thing the seeder produced.
+Still short of the 25-yard target, and the shortfall is itself the most useful
+thing the seeder produced.
 
 | Source | Yards | Notes |
 |---|---|---|
 | OpenStreetMap (Overpass) | 5 | after strict HD filtering |
 | HeavyTruckParts.net | 2 | the entire in-scope yield of the incumbent directory |
-| Verified from company websites | 3 | each checked against the business's own site |
+| Verified from company websites | 5 | each checked against the business's own site |
 
-Geographic spread: Bartow, Clayton, Cobb, Fulton, plus Ellenwood, Jackson,
-Gainesville and Athens. Split by type: 5 `hd_salvage`, 5 `oem_dealer`.
+Split by type: **7 `hd_salvage`, 5 `oem_dealer`**. Be honest with the team about
+that second number — Rush Truck Centers (×3), Peterbilt of Atlanta and Nextran
+are OEM franchise dealers and will not hand a startup a salvage feed. The Today
+view now has a yard-type filter so a rep can hide them. The genuinely
+independent list is short, which is the finding.
+
+Rejected during verification (worth knowing, so nobody re-adds them): Rydemore
+(a Massachusetts company with an Atlanta SEO landing page — no local yard),
+Atlanta Truck Equipment (construction/mining equipment), FleetPride (new-parts
+distributor), Southern Auto Salvage and McDonough Used Auto Parts (light auto,
+not HD).
 
 ### The findings that matter more than the count
 
@@ -162,9 +171,24 @@ Gainesville and Athens. Split by type: 5 `hd_salvage`, 5 `oem_dealer`.
    candidate (`hd_salvage` / `oem_dealer` / `scrap_metal` / `retail_chain`) and
    inserts only the first two.
 
-3. **Concentration is not yet measurable.** See BACKLOG item 1. A wrong number
-   here would misdecide the business case, so `/census` shows "—" and says so
-   plainly rather than publishing a figure that cannot be substantiated.
+3. **Concentration: 86% — the market is NOT fragmented.** Measured from the
+   incumbent's own public sitemap after confirming seller identity against live
+   item pages (the URL's 3rd-to-last segment is the corporate account, the
+   2nd-to-last is one of its branches).
+
+   HeavyTruckParts.net publishes **829,525 listings from 97 corporate sellers
+   across 128 yard locations**. One company (LKQ) holds **30%**; the top five
+   hold **67%**; the top twenty hold **86%**.
+
+   Against the stated threshold — ">70% means we are reselling one incumbent's
+   index, not aggregating a market" — this lands clearly on the wrong side.
+   Aggregating this index means reselling LKQ and Vander Haag's. That is the
+   single most important number the build produced, and it argues against the
+   aggregator thesis as originally framed.
+
+   Local counts tell the same story: LKQ Evans (Athens) 39,853 listings, Crest
+   (Cartersville) 12,070, HD Truck (Jackson) 1,645, Forest Park Tractor &
+   Trailer 58.
 
 Every record traces to a `source_url`. Nothing was invented.
 
