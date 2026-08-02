@@ -273,7 +273,7 @@ async function fromHeavyTruckParts() {
   const cPath = join(process.cwd(), 'data', 'htp-listing-counts.json')
   if (existsSync(cPath)) {
     counts = JSON.parse(readFileSync(cPath, 'utf8')) as Record<string, number>
-    console.log(`[htp] loaded listing counts for ${Object.keys(counts).length} sellers`)
+    console.log(`[htp] loaded listing counts for ${Object.keys(counts).length} seller locations`)
   } else {
     console.warn('[htp] no data/htp-listing-counts.json — published_listing_count will be null')
   }
@@ -323,7 +323,10 @@ async function fromHeavyTruckParts() {
 
     // published_listing_count — the fragmentation measurement. Counted from the
     // seller's own item URLs in the public sitemap; null when not measurable.
-    rec.published_listing_count = counts[v.fltpc] ?? null
+    // Key is "account:branch" — verified against live item pages; see
+    // scripts/htp-listing-counts.ts. A single account (e.g. LKQ 254076) spans
+    // many branches, so the account id alone would over-count a single yard.
+    rec.published_listing_count = counts[`${v.fltpc}:${v.store}`] ?? null
     rec.source_urls.push(`https://www.heavytruckparts.net/search.php?fltpc=${v.fltpc}&store=${v.store}`)
     console.log(`[htp]   ${v.name} (${city}) listings=${rec.published_listing_count ?? 'null'}`)
     upsert(rec)

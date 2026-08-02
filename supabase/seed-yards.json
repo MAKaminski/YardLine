@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T01:05:00.164Z",
+  "generated_at": "2026-08-02T01:35:30.794Z",
   "counts": {
     "total": 10,
     "withPhone": 9,
@@ -30,8 +30,8 @@
       "state": "GA",
       "zip": "30294",
       "county": null,
-      "lat": 33.6116689,
-      "lng": -84.3091543,
+      "lat": null,
+      "lng": null,
       "phone": "404-366-4843",
       "website": "https://richardkernstruckparts.com/",
       "source": "verified_web",
@@ -49,8 +49,8 @@
       "state": "GA",
       "zip": "30120",
       "county": "Bartow",
-      "lat": 34.1597749,
-      "lng": -84.7884408,
+      "lat": null,
+      "lng": null,
       "phone": "770-382-1595",
       "website": "https://cresttruckparts.com/",
       "source": "verified_web+heavytruckparts.net",
@@ -60,7 +60,7 @@
         "https://www.heavytruckparts.net/search.php?fltpc=2251343&store=1"
       ],
       "yard_type": "hd_salvage",
-      "published_listing_count": null,
+      "published_listing_count": 12070,
       "publishes_online": true
     },
     {
@@ -81,7 +81,7 @@
         "https://www.heavytruckparts.net/search.php?fltpc=5299744&store=1"
       ],
       "yard_type": "hd_salvage",
-      "published_listing_count": null,
+      "published_listing_count": 1645,
       "publishes_online": true
     },
     {
@@ -181,8 +181,8 @@
       "state": "GA",
       "zip": "30297",
       "county": "Clayton",
-      "lat": 33.6153386,
-      "lng": -84.3732459,
+      "lat": null,
+      "lng": null,
       "phone": "404-361-8785",
       "website": null,
       "source": "heavytruckparts.net",
@@ -192,7 +192,7 @@
       ],
       "yard_type": "hd_salvage",
       "publishes_online": true,
-      "published_listing_count": null
+      "published_listing_count": 58
     },
     {
       "name": "LKQ Evans Heavy Truck Parts",
@@ -212,7 +212,7 @@
       ],
       "yard_type": "hd_salvage",
       "publishes_online": true,
-      "published_listing_count": null
+      "published_listing_count": 39853
     }
   ]
 }

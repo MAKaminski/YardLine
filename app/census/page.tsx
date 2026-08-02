@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import AuthGate from '@/components/AuthGate'
 import { createClient } from '@/lib/supabase/client'
 import { FEEDABLE_IMS, type Intake, type Yard } from '@/lib/types'
+import HTP from '@/data/htp-concentration.json'
 
 function pct(n: number, d: number) {
   if (!d) return 0
@@ -161,19 +162,32 @@ function Census() {
         </p>
       </div>
 
-      <div className="mt-3 rounded-xl border border-amber-800 bg-amber-950/30 p-4">
-        <p className="text-xs font-bold uppercase tracking-wide text-amber-300">
-          Incumbent index — NOT YET MEASURED
+      {/* Measured from the incumbent's own public sitemap.
+          scripts/htp-listing-counts.ts — see data/htp-concentration.json.
+          Seller identity verified against live item pages: the URL's account id
+          is the corporate parent and the branch id is one of its yards. */}
+      <div className="mt-3 rounded-xl border border-red-800 bg-red-950/30 p-4">
+        <p className="text-xs font-bold uppercase tracking-wide text-red-300">
+          Incumbent index — measured 2026-08-02
         </p>
-        <p className="mt-1 text-sm leading-snug text-slate-300">
-          We can enumerate HeavyTruckParts.net&apos;s ~830k listing URLs from its public sitemap,
-          but the URL segment that identifies the <em>seller</em> is still ambiguous — one candidate
-          id is shared across two different dealers, and the other implies a single small yard holds
-          half the index. Neither is credible, so no concentration figure is published here.
+        <p className="mt-2 text-3xl font-black text-red-400">{HTP.top20_account_share_pct}%</p>
+        <p className="text-xs text-slate-400">top-20 corporate share of the whole index</p>
+        <p className="mt-2 text-sm leading-snug text-slate-300">
+          HeavyTruckParts.net publishes{' '}
+          <strong>{HTP.total_listings.toLocaleString()}</strong> listings from{' '}
+          <strong>{HTP.corporate_accounts}</strong> corporate sellers across{' '}
+          <strong>{HTP.seller_locations}</strong> yard locations. One company holds{' '}
+          <strong>{HTP.top1_account_share_pct}%</strong> of it; the top five hold{' '}
+          <strong>{HTP.top5_account_share_pct}%</strong>.
+        </p>
+        <p className="mt-2 text-sm font-semibold leading-snug text-red-300">
+          At {HTP.top20_account_share_pct}% this is not a fragmented market. Aggregating this index
+          means reselling a handful of large recyclers — chiefly LKQ and Vander Haag&apos;s.
         </p>
         <p className="mt-2 text-xs text-slate-500">
-          A wrong number here would decide the business case incorrectly. See BACKLOG.md for the
-          one-hour task that resolves it.
+          Counted from the site&apos;s own public sitemap; seller identity confirmed against live
+          item pages. Only 6 of those {HTP.corporate_accounts} sellers list a Georgia location,
+          which is why local discovery matters more than the directory.
         </p>
       </div>
 
