@@ -1,26 +1,24 @@
 {
-  "generated_at": "2026-08-02T01:02:49.013Z",
+  "generated_at": "2026-08-02T01:05:00.164Z",
   "counts": {
-    "total": 16,
-    "withPhone": 12,
-    "pct": 75,
+    "total": 10,
+    "withPhone": 9,
+    "pct": 90,
     "bySource": {
-      "verified_web": 2,
-      "verified_web+heavytruckparts.net": 1,
-      "osm": 8,
-      "heavytruckparts.net": 5
+      "verified_web": 1,
+      "verified_web+heavytruckparts.net": 2,
+      "osm": 5,
+      "heavytruckparts.net": 2
     },
     "byType": {
-      "hd_salvage": 11,
+      "hd_salvage": 5,
       "oem_dealer": 5
     },
     "byCounty": {
-      "unknown": 9,
-      "Bartow": 2,
+      "unknown": 6,
+      "Bartow": 1,
       "Cobb": 1,
       "Fulton": 1,
-      "Douglas": 1,
-      "Newton": 1,
       "Clayton": 1
     }
   },
@@ -51,13 +49,15 @@
       "state": "GA",
       "zip": "30120",
       "county": "Bartow",
-      "lat": null,
-      "lng": null,
+      "lat": 34.1597749,
+      "lng": -84.7884408,
       "phone": "770-382-1595",
       "website": "https://cresttruckparts.com/",
-      "source": "verified_web",
+      "source": "verified_web+heavytruckparts.net",
       "source_urls": [
-        "https://cresttruckparts.com/"
+        "https://cresttruckparts.com/",
+        "https://www.heavytruckparts.net/vendors.php",
+        "https://www.heavytruckparts.net/search.php?fltpc=2251343&store=1"
       ],
       "yard_type": "hd_salvage",
       "published_listing_count": null,
@@ -157,42 +157,6 @@
       "yard_type": "oem_dealer"
     },
     {
-      "name": "Stand Up Guys Junk Removal",
-      "address": "2024 Canton Road",
-      "city": null,
-      "state": "GA",
-      "zip": null,
-      "county": null,
-      "lat": 34.0007099,
-      "lng": -84.5237508,
-      "phone": null,
-      "website": null,
-      "source": "osm",
-      "source_urls": [
-        "https://www.openstreetmap.org/way/992847704"
-      ],
-      "osm_id": "way/992847704",
-      "yard_type": "hd_salvage"
-    },
-    {
-      "name": "Newell Recycling",
-      "address": "11140 Veterans Memorial Highway",
-      "city": "Douglasville",
-      "state": "GA",
-      "zip": "30134",
-      "county": "Douglas",
-      "lat": 33.7925625,
-      "lng": -84.6876494,
-      "phone": null,
-      "website": null,
-      "source": "osm",
-      "source_urls": [
-        "https://www.openstreetmap.org/way/1013020679"
-      ],
-      "osm_id": "way/1013020679",
-      "yard_type": "hd_salvage"
-    },
-    {
       "name": "Rush Truck Centers – Gainesville",
       "address": "2045 Atlas Circle",
       "city": "Gainesville",
@@ -209,84 +173,6 @@
       ],
       "osm_id": "way/1057897868",
       "yard_type": "oem_dealer"
-    },
-    {
-      "name": "Chancey's Wrecker Service",
-      "address": "4199 Old Atlanta Highway",
-      "city": "Covington",
-      "state": "GA",
-      "zip": "30014",
-      "county": "Newton",
-      "lat": 33.6044517,
-      "lng": -83.8676799,
-      "phone": null,
-      "website": null,
-      "source": "osm",
-      "source_urls": [
-        "https://www.openstreetmap.org/way/1133300347"
-      ],
-      "osm_id": "way/1133300347",
-      "yard_type": "hd_salvage"
-    },
-    {
-      "name": "crest truck parts",
-      "address": "640 Joe Frank Harris Parkway",
-      "city": "CARTERSVILLE",
-      "state": "GA",
-      "zip": "30120",
-      "county": "Bartow",
-      "lat": 34.1597749,
-      "lng": -84.7884408,
-      "phone": "800-424-2065",
-      "website": null,
-      "source": "heavytruckparts.net",
-      "source_urls": [
-        "https://www.heavytruckparts.net/vendors.php",
-        "https://www.heavytruckparts.net/search.php?fltpc=2251343&store=1"
-      ],
-      "yard_type": "hd_salvage",
-      "publishes_online": true,
-      "published_listing_count": null
-    },
-    {
-      "name": "LKQ Evans Heavy Truck Parts",
-      "address": "1510 Highway 29 N",
-      "city": "Athens",
-      "state": "GA",
-      "zip": "30601",
-      "county": null,
-      "lat": null,
-      "lng": null,
-      "phone": "855-557-8782",
-      "website": null,
-      "source": "heavytruckparts.net",
-      "source_urls": [
-        "https://www.heavytruckparts.net/vendors.php",
-        "https://www.heavytruckparts.net/search.php?fltpc=254076&store=24"
-      ],
-      "yard_type": "hd_salvage",
-      "publishes_online": true,
-      "published_listing_count": null
-    },
-    {
-      "name": "American Truck Parts,Inc",
-      "address": "250 Robert Harper Rd.",
-      "city": "Douglas",
-      "state": "GA",
-      "zip": "31533",
-      "county": null,
-      "lat": null,
-      "lng": null,
-      "phone": "912-383-8888",
-      "website": null,
-      "source": "heavytruckparts.net",
-      "source_urls": [
-        "https://www.heavytruckparts.net/vendors.php",
-        "https://www.heavytruckparts.net/search.php?fltpc=24153&store=1"
-      ],
-      "yard_type": "hd_salvage",
-      "publishes_online": true,
-      "published_listing_count": null
     },
     {
       "name": "Forest Park Tractor & Trailer",
@@ -309,20 +195,20 @@
       "published_listing_count": null
     },
     {
-      "name": "G & W Equipment",
-      "address": "250 ROBERT HARPER RD",
-      "city": "DOUGLAS",
+      "name": "LKQ Evans Heavy Truck Parts",
+      "address": "1510 Highway 29 N",
+      "city": "Athens",
       "state": "GA",
-      "zip": "31533",
+      "zip": "30601",
       "county": null,
       "lat": null,
       "lng": null,
-      "phone": "912-383-8888",
+      "phone": "855-557-8782",
       "website": null,
       "source": "heavytruckparts.net",
       "source_urls": [
         "https://www.heavytruckparts.net/vendors.php",
-        "https://www.heavytruckparts.net/search.php?fltpc=6824619&store=1"
+        "https://www.heavytruckparts.net/search.php?fltpc=254076&store=24"
       ],
       "yard_type": "hd_salvage",
       "publishes_online": true,

@@ -39,7 +39,12 @@ const CHAIN_BLOCKLIST =
 
 // Names that match a truck token but are obviously not parts businesses.
 const NOT_A_BUSINESS =
-  /pizza|taco|restaurant|catering|caterer|food truck|coffee|ice cream|brewery|church|school|park|library|museum|apartment|hotel|motel/i
+  /pizza|taco|restaurant|catering|caterer|food truck|coffee|ice cream|brewery|church|school|library|museum|apartment|hotel|motel/i
+
+// Services that touch trucks but sell no parts: towing, hauling, junk removal.
+// These matched salvage tokens and would waste a rep's morning.
+const NOT_A_PARTS_SELLER =
+  /junk removal|wrecker service|towing|tow service|hauling|dumpster|roll-?off|moving|storage|car wash|driving school/i
 
 const SALVAGE_TOKENS =
   /salvage|wreck|dismantl|recycl|junk|used\s+(truck|part)|core\s+supply|parts?\s+yard/i
@@ -56,9 +61,13 @@ function classify(name: string, tags: Record<string, string> = {}): YardType {
   const n = name || ''
   if (CHAIN_BLOCKLIST.test(n)) return 'retail_chain'
   if (NOT_A_BUSINESS.test(n)) return 'retail_chain' // excluded either way
+  if (NOT_A_PARTS_SELLER.test(n)) return 'retail_chain' // excluded either way
   if (OEM_DEALER.test(n)) return 'oem_dealer'
   // Scrap-metal recyclers buy ferrous tonnage; they do not sell HD parts.
-  if (SCRAP_METAL.test(n) && !SALVAGE_TOKENS.test(n.replace(SCRAP_METAL, ''))) return 'scrap_metal'
+  // Require an explicit HD signal to rescue anything matching a scrap name.
+  if (SCRAP_METAL.test(n) && !HD_TOKENS.test(n)) return 'scrap_metal'
+  // "<Name> Recycling" with no HD signal is a metal yard, not a truck yard.
+  if (/recycl/i.test(n) && !HD_TOKENS.test(n)) return 'scrap_metal'
   if (SALVAGE_TOKENS.test(n) && HD_TOKENS.test(n)) return 'hd_salvage'
   if (SALVAGE_TOKENS.test(n) && /auto|car\b/i.test(n)) return 'scrap_metal' // auto (light) salvage
   if (SALVAGE_TOKENS.test(n)) return 'hd_salvage'
@@ -373,10 +382,48 @@ function fromVerifiedFile() {
  * give us an address but no coordinates, so this has to run after geocoding —
  * otherwise south-Georgia yards (Douglas, 200mi away) land in the call list.
  */
+/**
+ * Directory and website records for the same yard often carry different phone
+ * numbers (a local line vs an 800 number), so the name+phone key alone leaves
+ * duplicates. Collapse anything with an identical normalised name.
+ */
+function mergeByName() {
+  const byName = new Map<string, string>()
+  for (const [k, r] of [...records.entries()]) {
+    const n = normName(r.name)
+    const first = byName.get(n)
+    if (!first) { byName.set(n, k); continue }
+    const a = records.get(first)!
+    for (const f of ['address', 'city', 'state', 'zip', 'county', 'phone', 'website', 'osm_id'] as const) {
+      if (!a[f] && r[f]) (a as Record<string, unknown>)[f] = r[f]
+    }
+    if (a.lat == null && r.lat != null) { a.lat = r.lat; a.lng = r.lng }
+    if (a.published_listing_count == null && r.published_listing_count != null) {
+      a.published_listing_count = r.published_listing_count
+    }
+    if (r.publishes_online) a.publishes_online = true
+    a.source = [...new Set([...a.source.split('+'), ...r.source.split('+')])].join('+')
+    a.source_urls = [...new Set([...a.source_urls, ...r.source_urls])]
+    records.delete(k)
+    console.log(`[merge] collapsed duplicate "${r.name}" into "${a.name}"`)
+  }
+}
+
+/** Cities we know sit outside the 60-mile scope but that failed to geocode. */
+const OUT_OF_SCOPE_CITIES = /^(douglas|waycross|valdosta|macon|savannah|columbus|albany|augusta)$/i
+
 function pruneOutOfScope() {
   let dropped = 0
   for (const [k, r] of [...records.entries()]) {
-    if (r.lat == null || r.lng == null) continue
+    if (r.lat == null || r.lng == null) {
+      // No coordinates: fall back to a city check so far-flung records can't slip through.
+      if (r.city && OUT_OF_SCOPE_CITIES.test(r.city.trim())) {
+        records.delete(k)
+        dropped++
+        console.log(`[scope] dropped ${r.name} (${r.city}) — city outside metro Atlanta`)
+      }
+      continue
+    }
     if (miles(ATL.lat, ATL.lng, r.lat, r.lng) > RADIUS_MI) {
       records.delete(k)
       dropped++
@@ -527,6 +574,7 @@ async function main() {
   await fromOverpass()
   try { await fromHeavyTruckParts() } catch (e) { console.warn('[htp] failed:', e) }
   await geocodeMissing()
+  mergeByName()
   pruneOutOfScope()
   emit()
 }
