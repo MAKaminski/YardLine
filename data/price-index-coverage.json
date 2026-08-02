@@ -1,0 +1,20 @@
+{
+  "collected_at": "2026-08-02T04:18:37.826Z",
+  "source": "heavytruckparts.net",
+  "rows": 1337,
+  "by_family": {
+    "electronics/ECMs": 167,
+    "hoods": 114,
+    "other": 576,
+    "cabs": 116,
+    "transmissions": 61,
+    "engines": 57,
+    "aftertreatment/DPF": 83,
+    "axles/suspension": 65,
+    "turbos": 36,
+    "rears/differentials": 62
+  },
+  "price_p25": 300.36,
+  "price_median": 500,
+  "price_p75": 1175.68
+}

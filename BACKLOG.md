@@ -2,11 +2,16 @@
 
 Ranked. Top item is census-critical.
 
-## 1. Rep can't see a yard's phone from inside the intake form
-`app/yards/[id]/intake/page.tsx` shows eleven questions but never the yard's
-number or a Call button, so a rep mid-call has to navigate away to redial or
-check who they're talking to. Add a sticky header with the yard name, a `tel:`
-Call button, and the digits.
+## 1. Price index is thin on engines and transmissions
+1,337 listings loaded, but only 57 engines and 61 transmissions — the two
+families the census cares most about. HTP's sitemap is dominated by body panels,
+so a plain round-robin under-samples them. Fix: run the collector again with the
+family filter narrowed to engines/transmissions/rears only. It is idempotent and
+now checkpoints every 25 pages.
+
+```bash
+pnpm dlx tsx scripts/collect-prices.ts --minutes=60
+```
 
 ## 2. No "Next yard" control; Today loses scroll position
 `app/yards/[id]/page.tsx` has no way to advance to the next call. Going back
