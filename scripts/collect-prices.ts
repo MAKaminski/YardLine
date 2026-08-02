@@ -235,7 +235,7 @@ function sq(v: unknown): string {
   return `'${String(v).replace(/'/g, "''")}'`
 }
 
-function emit() {
+function emit(checkpoint = false) {
   const rows = [...listings.values()]
   const byFamily: Record<string, number> = {}
   const prices: number[] = []
@@ -287,6 +287,11 @@ function emit() {
       2
     )
   )
+
+  if (checkpoint) {
+    console.log(`[checkpoint] wrote ${rows.length} listings`)
+    return
+  }
 
   console.log('\n===== PRICE INDEX =====')
   console.log(`listings: ${rows.length}`)
@@ -345,6 +350,9 @@ async function main() {
       const parsed = parseItemPage(u, html)
       parsed.forEach(add)
       fetched++
+      // Checkpoint as we go. An earlier run held everything in memory and only
+      // wrote on exit, which meant interrupting it discarded the whole crawl.
+      if (fetched % 25 === 0) emit(true)
       if (fetched % 10 === 0) {
         console.log(
           `[item] ${fetched} pages, ${listings.size} listings, ` +
