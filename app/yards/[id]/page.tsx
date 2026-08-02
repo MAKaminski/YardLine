@@ -28,6 +28,8 @@ function YardDetail({ id }: { id: string }) {
   const [cName, setCName] = useState('')
   const [cTitle, setCTitle] = useState('')
   const [cPhone, setCPhone] = useState('')
+  const [yardEmail, setYardEmail] = useState('')
+  const [inviteState, setInviteState] = useState<string | null>(null)
 
   const load = useCallback(async () => {
     const supabase = createClient()
@@ -41,6 +43,7 @@ function YardDetail({ id }: { id: string }) {
       supabase.from('intakes').select('yard_id, completed_at').eq('yard_id', id).maybeSingle(),
     ])
     setYard((y as Yard) ?? null)
+    setYardEmail(((y as Yard) ?? null)?.email ?? '')
     setActs((a ?? []) as Activity[])
     setContacts((c ?? []) as Contact[])
     setHasIntake(Boolean(i && (i as { completed_at: string | null }).completed_at))
@@ -170,6 +173,75 @@ function YardDetail({ id }: { id: string }) {
       >
         {hasIntake ? 'Discovery complete — review' : 'Start discovery (4 min)'}
       </Link>
+
+      {/* Send the census instead of calling it. Uses Resend, NOT Supabase auth
+          email — that path is capped at 2/hour and is needed for rep logins. */}
+      <section className="mt-4 rounded-xl border border-slate-800 bg-slate-900 p-3">
+        <h2 className="text-sm font-bold uppercase tracking-wide text-slate-400">
+          Or send it — no call needed
+        </h2>
+        <div className="mt-2 flex gap-2">
+          <input
+            type="email"
+            inputMode="email"
+            value={yardEmail}
+            onChange={(e) => setYardEmail(e.target.value)}
+            onBlur={async () => {
+              const v = yardEmail.trim() || null
+              if (v === (yard.email ?? null)) return
+              const supabase = createClient()
+              await supabase.from('yards').update({ email: v }).eq('id', yard.id)
+              load()
+            }}
+            placeholder="yard@example.com"
+            className="min-w-0 flex-1 rounded-lg border border-slate-700 bg-slate-950 px-3 py-3 text-base outline-none focus:border-blue-500"
+          />
+          <button
+            onClick={async () => {
+              setInviteState('sending')
+              const supabase = createClient()
+              const to = yardEmail.trim()
+              if (!to) {
+                setInviteState('Enter an email address first.')
+                return
+              }
+              try {
+                const res = await fetch('/api/invite', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ token: yard.public_token, email: to, yardName: yard.name }),
+                })
+                const j = await res.json()
+                await supabase.from('intake_invites').insert({
+                  yard_id: yard.id,
+                  token: yard.public_token,
+                  sent_to: to,
+                  sent_by: email,
+                })
+                if (j.sent) setInviteState(`Sent to ${to}`)
+                else if (j.mailto) {
+                  window.location.href = j.mailto
+                  setInviteState('Opened your mail app')
+                } else setInviteState(j.error ?? 'Send failed')
+              } catch {
+                setInviteState('Send failed')
+              }
+              load()
+            }}
+            className="shrink-0 rounded-lg bg-violet-600 px-4 py-3 text-sm font-bold"
+          >
+            {inviteState === 'sending' ? '…' : 'Email intake'}
+          </button>
+        </div>
+        {inviteState && inviteState !== 'sending' && (
+          <p className="mt-2 text-xs text-slate-400">{inviteState}</p>
+        )}
+        {yard.public_token && (
+          <p className="mt-2 break-all text-xs text-slate-600">
+            Share link: /i/{yard.public_token}
+          </p>
+        )}
+      </section>
 
       {/* One-tap dispositions */}
       <section className="mt-6">

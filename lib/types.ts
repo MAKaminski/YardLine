@@ -52,6 +52,7 @@ export type Yard = {
   publishes_online: boolean | null
   ims_vendor: string | null
   stage: Stage
+  public_token: string | null
   created_at: string
   updated_at: string
 }
@@ -85,6 +86,7 @@ export type Intake = {
   yard_id: string
   completed_by: string | null
   completed_at: string | null
+  completed_via?: string | null
   inventory_size: string | null
   ims_vendor: string | null
   publishes_where: string[] | null

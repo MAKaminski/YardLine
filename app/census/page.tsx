@@ -43,20 +43,29 @@ function Tile({
   )
 }
 
+type Invite = { yard_id: string; opened_at: string | null; completed_at: string | null }
+type VendorSub = { yard_id: string; line_count: number | null; matched_count: number | null }
+
 function Census() {
   const [yards, setYards] = useState<Yard[]>([])
   const [intakes, setIntakes] = useState<Intake[]>([])
+  const [invites, setInvites] = useState<Invite[]>([])
+  const [subs, setSubs] = useState<VendorSub[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const supabase = createClient()
     ;(async () => {
-      const [{ data: y }, { data: i }] = await Promise.all([
+      const [{ data: y }, { data: i }, { data: inv }, { data: vs }] = await Promise.all([
         supabase.from('yards').select('*'),
         supabase.from('intakes').select('*'),
+        supabase.from('intake_invites').select('yard_id, opened_at, completed_at'),
+        supabase.from('vendor_submissions').select('yard_id, line_count, matched_count'),
       ])
       setYards((y ?? []) as Yard[])
       setIntakes((i ?? []) as Intake[])
+      setInvites((inv ?? []) as Invite[])
+      setSubs((vs ?? []) as VendorSub[])
       setLoading(false)
     })()
   }, [])
@@ -69,6 +78,12 @@ function Census() {
   ).length
 
   const done = intakes.filter((i) => i.completed_at)
+  // Self-reported answers are weaker evidence than rep-verified ones. The
+  // dashboard must never blur the two.
+  const byRep = done.filter((i) => (i.completed_via ?? 'rep') === 'rep').length
+  const selfServe = done.filter((i) => i.completed_via === 'self_serve').length
+  const opened = invites.filter((v) => v.opened_at).length
+  const yardsWithSubs = new Set(subs.map((s) => s.yard_id)).size
   const feedable = done.filter((i) => i.ims_vendor && FEEDABLE_IMS.includes(i.ims_vendor)).length
   const manual = done.filter((i) => ['Spreadsheet', 'Paper'].includes(i.ims_vendor ?? '')).length
 
@@ -136,6 +151,22 @@ function Census() {
           label="Feed willingness"
           value={`${willing.yes} / ${willing.maybe} / ${willing.no}`}
           sub="yes / maybe / no"
+        />
+        <Tile
+          label="Evidence quality"
+          value={`${byRep} / ${selfServe}`}
+          sub="rep-verified / self-reported. A yard answering its own survey is weaker evidence than a rep on the phone — weight accordingly."
+        />
+        <Tile
+          label="Invite funnel"
+          value={`${invites.length} → ${opened} → ${selfServe}`}
+          sub="sent → opened → completed, without a call"
+        />
+        <Tile
+          label="Handed over inventory"
+          value={String(yardsWithSubs)}
+          tone={yardsWithSubs > 0 ? 'good' : 'slate'}
+          sub="Yards that pasted a real parts list to get it priced. Revealed preference — a stronger feed signal than anything they say."
         />
         <Tile
           label="Concentration"
