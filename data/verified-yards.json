@@ -1,0 +1,44 @@
+[
+  {
+    "name": "Richard Kerns Truck Parts",
+    "address": "2495 Forest Pkwy",
+    "city": "Ellenwood",
+    "state": "GA",
+    "zip": "30294",
+    "phone": "404-366-4843",
+    "website": "https://richardkernstruckparts.com/",
+    "yard_type": "hd_salvage",
+    "source": "verified_web",
+    "source_urls": ["https://richardkernstruckparts.com/"],
+    "publishes_online": true,
+    "_verified": "Phone, city and class-8 salvage focus confirmed on the company's own website 2026-08-02."
+  },
+  {
+    "name": "Crest Truck Parts",
+    "address": "640 J.F.H. Pkwy",
+    "city": "Cartersville",
+    "state": "GA",
+    "zip": "30120",
+    "phone": "770-382-1595",
+    "website": "https://cresttruckparts.com/",
+    "yard_type": "hd_salvage",
+    "source": "verified_web",
+    "source_urls": ["https://cresttruckparts.com/"],
+    "publishes_online": true,
+    "_verified": "Name, full address and phone confirmed on the company's own website 2026-08-02."
+  },
+  {
+    "name": "HD Truck Repair & Service",
+    "address": "136 Truck Stop Way",
+    "city": "Jackson",
+    "state": "GA",
+    "zip": "30233",
+    "phone": "770-775-4739",
+    "website": "https://hdtrs.com/",
+    "yard_type": "hd_salvage",
+    "source": "verified_web",
+    "source_urls": ["https://hdtrs.com/"],
+    "publishes_online": true,
+    "_verified": "Address, phone and on-site salvage yard confirmed on the company's own website 2026-08-02. Name matched to the HeavyTruckParts.net listing spelling so the two records dedupe."
+  }
+]

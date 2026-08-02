@@ -1,0 +1,332 @@
+{
+  "generated_at": "2026-08-02T01:02:49.013Z",
+  "counts": {
+    "total": 16,
+    "withPhone": 12,
+    "pct": 75,
+    "bySource": {
+      "verified_web": 2,
+      "verified_web+heavytruckparts.net": 1,
+      "osm": 8,
+      "heavytruckparts.net": 5
+    },
+    "byType": {
+      "hd_salvage": 11,
+      "oem_dealer": 5
+    },
+    "byCounty": {
+      "unknown": 9,
+      "Bartow": 2,
+      "Cobb": 1,
+      "Fulton": 1,
+      "Douglas": 1,
+      "Newton": 1,
+      "Clayton": 1
+    }
+  },
+  "records": [
+    {
+      "name": "Richard Kerns Truck Parts",
+      "address": "2495 Forest Pkwy",
+      "city": "Ellenwood",
+      "state": "GA",
+      "zip": "30294",
+      "county": null,
+      "lat": 33.6116689,
+      "lng": -84.3091543,
+      "phone": "404-366-4843",
+      "website": "https://richardkernstruckparts.com/",
+      "source": "verified_web",
+      "source_urls": [
+        "https://richardkernstruckparts.com/"
+      ],
+      "yard_type": "hd_salvage",
+      "published_listing_count": null,
+      "publishes_online": true
+    },
+    {
+      "name": "Crest Truck Parts",
+      "address": "640 J.F.H. Pkwy",
+      "city": "Cartersville",
+      "state": "GA",
+      "zip": "30120",
+      "county": "Bartow",
+      "lat": null,
+      "lng": null,
+      "phone": "770-382-1595",
+      "website": "https://cresttruckparts.com/",
+      "source": "verified_web",
+      "source_urls": [
+        "https://cresttruckparts.com/"
+      ],
+      "yard_type": "hd_salvage",
+      "published_listing_count": null,
+      "publishes_online": true
+    },
+    {
+      "name": "HD Truck Repair & Service",
+      "address": "136 Truck Stop Way",
+      "city": "Jackson",
+      "state": "GA",
+      "zip": "30233",
+      "county": null,
+      "lat": null,
+      "lng": null,
+      "phone": "770-775-4739",
+      "website": "https://hdtrs.com/",
+      "source": "verified_web+heavytruckparts.net",
+      "source_urls": [
+        "https://hdtrs.com/",
+        "https://www.heavytruckparts.net/vendors.php",
+        "https://www.heavytruckparts.net/search.php?fltpc=5299744&store=1"
+      ],
+      "yard_type": "hd_salvage",
+      "published_listing_count": null,
+      "publishes_online": true
+    },
+    {
+      "name": "Rush Truck Centers – Smyrna",
+      "address": "2120 Atlanta Road Southeast",
+      "city": "Smyrna",
+      "state": "GA",
+      "zip": "30080",
+      "county": "Cobb",
+      "lat": 33.9014405,
+      "lng": -84.5249946,
+      "phone": "678-718-3000",
+      "website": "https://www.rushtruckcenters.com/locations/19010000-smyrna",
+      "source": "osm",
+      "source_urls": [
+        "https://www.openstreetmap.org/way/264974900"
+      ],
+      "osm_id": "way/264974900",
+      "yard_type": "oem_dealer"
+    },
+    {
+      "name": "Peterbilt of Atlanta",
+      "address": "2395 Old US 41 Highway Northwest",
+      "city": null,
+      "state": "GA",
+      "zip": null,
+      "county": null,
+      "lat": 34.0109448,
+      "lng": -84.6074383,
+      "phone": "404-592-9980",
+      "website": "https://peteatlanta.com/",
+      "source": "osm",
+      "source_urls": [
+        "https://www.openstreetmap.org/way/283272835"
+      ],
+      "osm_id": "way/283272835",
+      "yard_type": "oem_dealer"
+    },
+    {
+      "name": "Rush Truck Centers – Doraville",
+      "address": "2500 Button Gwinnett Drive",
+      "city": "Atlanta",
+      "state": "GA",
+      "zip": "30340",
+      "county": "Fulton",
+      "lat": 33.9206105,
+      "lng": -84.2412512,
+      "phone": "678-578-1600",
+      "website": "https://www.rushtruckcenters.com/locations/19040000-doraville",
+      "source": "osm",
+      "source_urls": [
+        "https://www.openstreetmap.org/way/388292690"
+      ],
+      "osm_id": "way/388292690",
+      "yard_type": "oem_dealer"
+    },
+    {
+      "name": "Nextran Truck Centers",
+      "address": "1414 Shiloh Road Northwest",
+      "city": null,
+      "state": "GA",
+      "zip": null,
+      "county": null,
+      "lat": 34.0512635,
+      "lng": -84.592738,
+      "phone": null,
+      "website": "https://nextranusa.com/locations/kennesaw/",
+      "source": "osm",
+      "source_urls": [
+        "https://www.openstreetmap.org/way/793655457"
+      ],
+      "osm_id": "way/793655457",
+      "yard_type": "oem_dealer"
+    },
+    {
+      "name": "Stand Up Guys Junk Removal",
+      "address": "2024 Canton Road",
+      "city": null,
+      "state": "GA",
+      "zip": null,
+      "county": null,
+      "lat": 34.0007099,
+      "lng": -84.5237508,
+      "phone": null,
+      "website": null,
+      "source": "osm",
+      "source_urls": [
+        "https://www.openstreetmap.org/way/992847704"
+      ],
+      "osm_id": "way/992847704",
+      "yard_type": "hd_salvage"
+    },
+    {
+      "name": "Newell Recycling",
+      "address": "11140 Veterans Memorial Highway",
+      "city": "Douglasville",
+      "state": "GA",
+      "zip": "30134",
+      "county": "Douglas",
+      "lat": 33.7925625,
+      "lng": -84.6876494,
+      "phone": null,
+      "website": null,
+      "source": "osm",
+      "source_urls": [
+        "https://www.openstreetmap.org/way/1013020679"
+      ],
+      "osm_id": "way/1013020679",
+      "yard_type": "hd_salvage"
+    },
+    {
+      "name": "Rush Truck Centers – Gainesville",
+      "address": "2045 Atlas Circle",
+      "city": "Gainesville",
+      "state": "GA",
+      "zip": "30501",
+      "county": null,
+      "lat": 34.280499,
+      "lng": -83.848595,
+      "phone": "470-248-7050",
+      "website": "https://www.rushtruckcenters.com/locations/19070000-gainesville",
+      "source": "osm",
+      "source_urls": [
+        "https://www.openstreetmap.org/way/1057897868"
+      ],
+      "osm_id": "way/1057897868",
+      "yard_type": "oem_dealer"
+    },
+    {
+      "name": "Chancey's Wrecker Service",
+      "address": "4199 Old Atlanta Highway",
+      "city": "Covington",
+      "state": "GA",
+      "zip": "30014",
+      "county": "Newton",
+      "lat": 33.6044517,
+      "lng": -83.8676799,
+      "phone": null,
+      "website": null,
+      "source": "osm",
+      "source_urls": [
+        "https://www.openstreetmap.org/way/1133300347"
+      ],
+      "osm_id": "way/1133300347",
+      "yard_type": "hd_salvage"
+    },
+    {
+      "name": "crest truck parts",
+      "address": "640 Joe Frank Harris Parkway",
+      "city": "CARTERSVILLE",
+      "state": "GA",
+      "zip": "30120",
+      "county": "Bartow",
+      "lat": 34.1597749,
+      "lng": -84.7884408,
+      "phone": "800-424-2065",
+      "website": null,
+      "source": "heavytruckparts.net",
+      "source_urls": [
+        "https://www.heavytruckparts.net/vendors.php",
+        "https://www.heavytruckparts.net/search.php?fltpc=2251343&store=1"
+      ],
+      "yard_type": "hd_salvage",
+      "publishes_online": true,
+      "published_listing_count": null
+    },
+    {
+      "name": "LKQ Evans Heavy Truck Parts",
+      "address": "1510 Highway 29 N",
+      "city": "Athens",
+      "state": "GA",
+      "zip": "30601",
+      "county": null,
+      "lat": null,
+      "lng": null,
+      "phone": "855-557-8782",
+      "website": null,
+      "source": "heavytruckparts.net",
+      "source_urls": [
+        "https://www.heavytruckparts.net/vendors.php",
+        "https://www.heavytruckparts.net/search.php?fltpc=254076&store=24"
+      ],
+      "yard_type": "hd_salvage",
+      "publishes_online": true,
+      "published_listing_count": null
+    },
+    {
+      "name": "American Truck Parts,Inc",
+      "address": "250 Robert Harper Rd.",
+      "city": "Douglas",
+      "state": "GA",
+      "zip": "31533",
+      "county": null,
+      "lat": null,
+      "lng": null,
+      "phone": "912-383-8888",
+      "website": null,
+      "source": "heavytruckparts.net",
+      "source_urls": [
+        "https://www.heavytruckparts.net/vendors.php",
+        "https://www.heavytruckparts.net/search.php?fltpc=24153&store=1"
+      ],
+      "yard_type": "hd_salvage",
+      "publishes_online": true,
+      "published_listing_count": null
+    },
+    {
+      "name": "Forest Park Tractor & Trailer",
+      "address": "5244 Springdale Road",
+      "city": "Forest Park",
+      "state": "GA",
+      "zip": "30297",
+      "county": "Clayton",
+      "lat": 33.6153386,
+      "lng": -84.3732459,
+      "phone": "404-361-8785",
+      "website": null,
+      "source": "heavytruckparts.net",
+      "source_urls": [
+        "https://www.heavytruckparts.net/vendors.php",
+        "https://www.heavytruckparts.net/search.php?fltpc=781247&store=1"
+      ],
+      "yard_type": "hd_salvage",
+      "publishes_online": true,
+      "published_listing_count": null
+    },
+    {
+      "name": "G & W Equipment",
+      "address": "250 ROBERT HARPER RD",
+      "city": "DOUGLAS",
+      "state": "GA",
+      "zip": "31533",
+      "county": null,
+      "lat": null,
+      "lng": null,
+      "phone": "912-383-8888",
+      "website": null,
+      "source": "heavytruckparts.net",
+      "source_urls": [
+        "https://www.heavytruckparts.net/vendors.php",
+        "https://www.heavytruckparts.net/search.php?fltpc=6824619&store=1"
+      ],
+      "yard_type": "hd_salvage",
+      "publishes_online": true,
+      "published_listing_count": null
+    }
+  ]
+}
