@@ -7,24 +7,64 @@ working login.
 
 ---
 
-## ⚠️ ONE STEP LEFT: allowlist the redirect URL in Supabase (2 minutes)
+## ⚠️ EMAIL IS THE CONSTRAINT — read before the team starts
 
-**Do this before reps start calling, or every magic link will break.**
+Auth uses Supabase's **built-in** email sender, which is capped at
+**2 emails per hour for the whole project**. Custom SMTP via Resend was tried
+and rolled back (see below). Supabase automatically reset the rate-limit field
+from 30 back to `2/1h` the moment custom SMTP was disabled.
 
-Supabase → **Authentication → URL Configuration**:
+**Five reps cannot log in cold at 7:45am.** The first two get links; the rest
+get an error.
 
-- **Site URL:** `https://yard-line.vercel.app`
-- **Redirect URLs:** add `https://yard-line.vercel.app/auth/callback`
+### The plan that works: log everyone in the night before
 
-The app requests `emailRedirectTo = <origin>/auth/callback`. If that URL is not
-on the allowlist, GoTrue silently falls back to the Site URL — which defaults
-to `http://localhost:3000`, so a rep tapping the link on their phone lands
-nowhere.
+Supabase sessions persist across app restarts and last well beyond a single
+day. Have each rep sign in the evening before, spaced ~30 minutes apart, and
+they will still be signed in the next morning with no email involved.
 
-I could not verify or set this from the build environment: there is no Supabase
-MCP tool for auth configuration, and the REST API accepted a deliberately bogus
-`redirect_to` with HTTP 200, so it gives no signal either way. **Assume it is
-unset until you have looked.**
+### The permanent fix: custom SMTP
+
+A Resend account is already set up and verified for this:
+
+- Domain `modularequity.com` — verified, sending enabled
+- Two sending-only API keys exist, named *YardLine Supabase SMTP* and
+  *YardLine SMTP unrestricted*
+- A test send from `yardline@modularequity.com` delivered successfully, so the
+  Resend side is known good
+
+It was rolled back because Supabase returned
+`535 "Authentication credentials invalid"` on every send. Resend's SMTP
+username must be the **literal string `resend`** — not the sender address, not
+the API key. That is the most likely cause and was never re-tested.
+
+To retry, at
+https://supabase.com/dashboard/project/gmqarvuurgpqchetmups/settings/auth
+→ SMTP Settings:
+
+| Field | Value |
+|---|---|
+| Host | `smtp.resend.com` |
+| Port | `587` |
+| Username | `resend` (literal, lowercase) |
+| Password | a Resend API key, re-pasted cleanly |
+| Sender email | `yardline@modularequity.com` |
+| Sender name | `YardLine` |
+
+Then raise **Rate Limits → emails per hour**; it does not stick while custom
+SMTP is off.
+
+### 🔴 This Supabase project is shared with Lace Luxx
+
+Auth logs show `/otp` requests from `https://www.lace-luxx.com/` on the same
+GoTrue instance. **Any SMTP change here changes Lace Luxx's auth email too** —
+the broken 535 config took down Lace Luxx logins as well until it was rolled
+back. Verify both apps after any auth change. A dedicated YardLine project
+removes this coupling permanently (see "Database" below).
+
+### Redirect URL — done
+`https://yard-line.vercel.app/auth/callback` is allowlisted and working; failing
+requests carried it as referer with no invalid-redirect error.
 
 ---
 
