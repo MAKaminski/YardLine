@@ -29,13 +29,14 @@ Until then `published_listing_count` stays `null` and `/census` shows the
 concentration tile as "—" with an explicit "not yet measured" note. **Do not
 publish a concentration figure until this is resolved.**
 
-## 2. Deploy to Vercel — the app is not hosted yet
-The Vercel token in this environment returned
-`403 forbidden: You don't have permission to create a project`, so no
-production URL exists. Everything else is built, tested locally, and pushed.
+## 2. ~~Deploy to Vercel~~ — DONE, but allowlist the redirect URL
+Live at **https://yard-line.vercel.app**, git-connected, auto-deploys on push.
 
-**Task (~5 minutes, needs a human with Vercel owner/admin rights):** see
-HANDOFF.md → "Deploying".
+**Still required (~2 min):** add `https://yard-line.vercel.app/auth/callback`
+to Supabase → Authentication → Redirect URLs, and set Site URL to the same
+origin. Without it GoTrue falls back to `http://localhost:3000` and every magic
+link breaks. Could not be set or read from the build environment — see
+HANDOFF.md.
 
 ## 3. Get the yard count above 10
 Only 10 in-scope yards are seeded. This is partly a real finding (see HANDOFF)

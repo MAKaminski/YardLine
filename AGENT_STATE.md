@@ -3,7 +3,7 @@
 Started: 2026-08-02T00:42:22Z
 Budget ends: 2026-08-02T02:42:22Z
 Feature freeze (T+90): 2026-08-02T02:12:22Z
-Current phase: 8 — Handoff (complete)
+Current phase: post-build — deployed and verified
 Elapsed: ~125 minutes
 
 ## Phase status
@@ -12,8 +12,8 @@ Elapsed: ~125 minutes
 - [x] 2 Seeder           — PARTIAL: 10 yards @ 90% phone (target was 25 @ 80%)
 - [x] 3 App              — all 6 routes built, every route 200
 - [x] 4 Census dashboard — 6 tiles + verbatim objections; concentration honest-null
-- [ ] 5 Deploy           — BLOCKED: Vercel 403, no create-project permission
-- [x] 6 Smoke test       — MANUAL_SMOKE.md (Playwright fallback taken)
+- [x] 5 Deploy           — LIVE at https://yard-line.vercel.app (git-connected, auto-deploys)
+- [x] 6 Smoke test       — MANUAL_SMOKE.md, re-run against PRODUCTION
 - [ ] 7 Self-critique    — CUT for time (first item in the stated cut order)
 - [x] 8 Handoff          — HANDOFF.md, BACKLOG.md, MANUAL_SMOKE.md
 
@@ -32,13 +32,17 @@ Elapsed: ~125 minutes
 - 02:00Z Vercel deploy failed 403 (no create-project permission) on both team and personal scope. Took the documented fallback: verified against a local production build and wrote exact deploy instructions rather than leaving a false "shipped" claim.
 
 ## Blockers / degradations
-- **NOT DEPLOYED.** Vercel returned `403 forbidden: You don't have permission to create a project` for team `makaminski1337` and for personal scope. FIX: a human with Vercel owner/admin rights runs the 5-command sequence in HANDOFF.md → "Deploying", then registers the production URL in Supabase Auth redirect URLs.
+- ~~NOT DEPLOYED~~ RESOLVED 2026-08-02: the user connected a `yard-line` Vercel project to the repo. Live at https://yard-line.vercel.app, deployment dpl_2FVmNhiu READY, all 6 routes 200 against production.
+- **Supabase Auth redirect URL is probably still unset.** The app requests `<origin>/auth/callback`; if that is not allowlisted, GoTrue falls back to Site URL (default `http://localhost:3000`) and every magic link breaks on a rep's phone. I could not set or even read this — no Supabase MCP tool covers auth config, and the REST API accepted a deliberately bogus `redirect_to` with HTTP 200, so it yields no signal. FIX: 2-minute dashboard step, first section of HANDOFF.md.
 - **Supabase project is shared** with the Lace Luxx app (`gmqarvuurgpqchetmups`). RLS gates all rows on allowed_emails so nothing is cross-exposed, but auth users share a pool. FIX in HANDOFF.md → "Database".
 - **published_listing_count is NULL for every yard**, so /census cannot show a concentration figure. This is deliberate — see the 01:48Z decision. FIX: BACKLOG item 1 (~1 hour).
 - **Only 10 yards, not 25.** Partly a genuine market finding (HeavyTruckParts.net lists just 6 vendors in all of Georgia; its own locator reports 6 salvage yards within 150 miles of Atlanta), partly incomplete discovery — only 5 of the 20 permitted web-search queries were spent. FIX: BACKLOG item 3.
 - **findtruckservice.com and yelp.com return HTTP 403.** Blocked, logged, skipped per policy. Not bypassed.
 - **Phase 7 self-critique not run** — clock. It is the first item in the brief's own cut order. Run post-deploy.
 - Playwright not run (no deployed URL). MANUAL_SMOKE.md executed by hand against a local production build instead.
+
+- **The connected Vercel project shipped with no env vars.** First deployment's client bundle had no Supabase URL — login would have failed for every rep. Fixed by committing `.env.production` (public-by-design NEXT_PUBLIC_ values; anon key inert without an allowed_emails session). Verified present in the deployed bundle.
+- Vercel Authentication is on for `all_except_custom_domains`. The production alias is empirically NOT gated (returns our app, 200, no SSO markers), but per-deployment preview URLs ARE. Send reps `yard-line.vercel.app`, never a `yard-line-<hash>` URL.
 
 ## Resume instructions
 ```
@@ -53,5 +57,6 @@ pnpm dlx vercel login && pnpm dlx vercel link && pnpm dlx vercel --prod
 # Re-run the seeder (idempotent, merges on dedupe_key)
 pnpm dlx tsx scripts/seed-yards.ts
 ```
-Next action: BACKLOG item 1 (resolve the HTP seller id — unblocks the
-concentration metric), then item 2 (deploy).
+Next action: allowlist `https://yard-line.vercel.app/auth/callback` in Supabase
+Auth (2 min, blocks rep login), then BACKLOG item 1 (resolve the HTP seller id —
+unblocks the concentration metric).

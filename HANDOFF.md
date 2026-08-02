@@ -1,42 +1,71 @@
 # YardLine — HANDOFF
 
-Built 2026-08-02 in a 2-hour window. Read the two ⚠️ items first.
+Built 2026-08-02 in a 2-hour window. **LIVE:** https://yard-line.vercel.app
+
+Read the ⚠️ item first — it is the one thing standing between reps and a
+working login.
 
 ---
 
-## ⚠️ Status: NOT DEPLOYED
+## ⚠️ ONE STEP LEFT: allowlist the redirect URL in Supabase (2 minutes)
 
-There is no production URL. The Vercel token in the build environment returned:
+**Do this before reps start calling, or every magic link will break.**
+
+Supabase → **Authentication → URL Configuration**:
+
+- **Site URL:** `https://yard-line.vercel.app`
+- **Redirect URLs:** add `https://yard-line.vercel.app/auth/callback`
+
+The app requests `emailRedirectTo = <origin>/auth/callback`. If that URL is not
+on the allowlist, GoTrue silently falls back to the Site URL — which defaults
+to `http://localhost:3000`, so a rep tapping the link on their phone lands
+nowhere.
+
+I could not verify or set this from the build environment: there is no Supabase
+MCP tool for auth configuration, and the REST API accepted a deliberately bogus
+`redirect_to` with HTTP 200, so it gives no signal either way. **Assume it is
+unset until you have looked.**
+
+---
+
+## Deployment status: LIVE ✅
+
+| | |
+|---|---|
+| Production URL | https://yard-line.vercel.app |
+| Vercel project | `yard-line` (`prj_PwXxQ9FHgYVFKa2HHxGeItbUeEZl`) |
+| Deployment | `dpl_2FVmNhiuBCATZQ71Bo9wrrRNgK4X`, state READY, target production |
+| Source | git-connected, auto-deploys on push to `claude/yardline-crm-build-je0ngh` |
+
+Verified against production after the env fix:
 
 ```
-403 forbidden: You don't have permission to create a project.
+/                          200
+/login                     200   (renders the real app; no Vercel SSO wall)
+/map                       200
+/census                    200
+/yards/<id>                200
+/yards/<id>/intake         200
+/auth/callback (no code)   307 → /login?error=link_expired
+anon REST read of yards    200 []   ← RLS correctly blocks unauthenticated reads
+NEXT_PUBLIC_SUPABASE_URL   present in the client bundle
 ```
 
-Everything else is done: the schema is applied and live, 10 real yards are
-seeded, and all seven routes were verified returning 200 against a local
-production build (`pnpm build && pnpm start`).
+### Note on env vars
+The connected project had **no environment variables**, so the first deployment
+shipped a client bundle with no Supabase URL — login would have failed for
+everyone. The two `NEXT_PUBLIC_*` values now live in a committed
+`.env.production`. They are compiled into the browser bundle by design, and the
+anon key is inert without an `allowed_emails`-backed session (proved by the
+empty anonymous read above). If you'd rather keep them in the Vercel dashboard,
+set them there and delete `.env.production`.
 
-### Deploying (~5 minutes, needs Vercel owner/admin)
-
-```bash
-git clone <this repo> && cd YardLine
-git checkout claude/yardline-crm-build-je0ngh
-pnpm install
-pnpm dlx vercel login
-pnpm dlx vercel link          # create/select the "yardline" project
-pnpm dlx vercel env add NEXT_PUBLIC_SUPABASE_URL production
-#   → https://gmqarvuurgpqchetmups.supabase.co
-pnpm dlx vercel env add NEXT_PUBLIC_SUPABASE_ANON_KEY production
-#   → see .env.local (anon key; public by design, RLS gates everything)
-pnpm dlx vercel --prod
-```
-
-Then in **Supabase → Authentication → URL Configuration**, add the production
-URL to **Site URL** and **Redirect URLs** (append `/auth/callback`), or magic
-links will bounce back to localhost.
-
-Alternatively: connect the GitHub repo in the Vercel dashboard and set the same
-two env vars — no CLI needed.
+### Note on deployment protection
+The project has Vercel Authentication enabled for
+`all_except_custom_domains`. Empirically the production alias
+`yard-line.vercel.app` is **not** gated — it returns our app, 200, with no SSO
+markers. Per-deployment preview URLs (`yard-line-<hash>-…`) are gated, so send
+reps the clean `yard-line.vercel.app` link, not a deployment-specific one.
 
 ---
 
@@ -145,7 +174,8 @@ Every record traces to a `source_url`. Nothing was invented.
 
 | What | Why | Fix |
 |---|---|---|
-| **Production deploy** | Vercel 403, no create-project permission | See "Deploying" above |
+| ~~Production deploy~~ | RESOLVED — live at https://yard-line.vercel.app | — |
+| **Supabase redirect allowlist** | could not be set or read from the build environment | 2-minute dashboard step at the top of this file |
 | **Dedicated Supabase project** | free-project cap; refused to pause a stranger's production DB | See "Database" above |
 | **TruckPartsInventory.com** | HTTP 403 Cloudflare interactive challenge = access control | Commercial data agreement or licensed API. **Do not bypass** — see SCRAPING_POLICY.md |
 | **findtruckservice.com, yelp.com** | HTTP 403 | Blocked; skipped per policy. A human may read them manually |
