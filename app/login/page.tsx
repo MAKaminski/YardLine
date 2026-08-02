@@ -3,6 +3,31 @@
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 
+/**
+ * GoTrue returns a bare `{}` body when the mail transport itself fails (e.g. an
+ * SMTP 535), so `error.message` renders as literal "{}" and a rep sees nothing
+ * actionable. Map the cases they can actually act on, and always leave a hint
+ * about who can fix the rest.
+ */
+function describeAuthError(error: { message?: string; status?: number }): string {
+  const raw = (error.message ?? '').trim()
+  const status = error.status
+
+  if (/rate limit/i.test(raw) || status === 429) {
+    return 'Too many links requested. Wait a minute, then try again.'
+  }
+  if (/redirect/i.test(raw)) {
+    return 'Sign-in link misconfigured (redirect URL not allowed). Tell an admin.'
+  }
+  if (/invalid.*email|email.*invalid/i.test(raw)) {
+    return 'That does not look like a valid email address.'
+  }
+  if (!raw || raw === '{}' || status === 500) {
+    return "Couldn't send the link — the email service rejected it. Tell an admin (Supabase SMTP settings)."
+  }
+  return raw
+}
+
 export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [sent, setSent] = useState(false)
@@ -19,7 +44,7 @@ export default function LoginPage() {
       options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
     })
     setBusy(false)
-    if (error) setError(error.message)
+    if (error) setError(describeAuthError(error))
     else setSent(true)
   }
 
