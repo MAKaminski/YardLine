@@ -2,68 +2,75 @@
 
 Ranked. Top item is census-critical.
 
-## 1. Resolve the HeavyTruckParts.net seller id — blocks the concentration metric
-**Why it matters:** concentration is the number that decides whether the
-aggregator business exists. We can enumerate ~830k listing URLs from the public
-sitemap, but not yet attribute them to sellers.
+## 1. Rep can't see a yard's phone from inside the intake form
+`app/yards/[id]/intake/page.tsx` shows eleven questions but never the yard's
+number or a Call button, so a rep mid-call has to navigate away to redial or
+check who they're talking to. Add a sticky header with the yard name, a `tel:`
+Call button, and the digits.
 
-Item URLs look like:
-`/item/{Make}/{Model}/{PartType}/{A}/{B}/{stockNo}` — e.g.
-`/item/Freightliner/Coe/Front-End-Assembly/742607/1/761`
+## 2. No "Next yard" control; Today loses scroll position
+`app/yards/[id]/page.tsx` has no way to advance to the next call. Going back
+remounts `app/page.tsx`, refetches, and drops the rep to the top of the list —
+forty times a morning that is real friction. Add a "Next ▸" link and preserve
+scroll (or keep the list in a context/store).
 
-Neither candidate holds up:
-- `{A}` (3rd-to-last) — matches the `fltpc` on `/vendors.php`, but **254076 is
-  shared by LKQ Evans (store 24) and Maryland Truck (store 2)**, so it is a part
-  code, not a seller. Keying on it yields a bogus "97 sellers / 86% top-20".
-- `{B}` (2nd-to-last) — matches `store=N`, but yields only 18 distinct values
-  with store 1 holding 407k listings, which would mean one small Forest Park
-  yard holds half the national index. Not credible.
+## 3. Map plots the wrong companies
+Only 5 of 12 yards have coordinates, and they are disproportionately the OEM
+dealers — several independent salvage yards geocoded to null, so they never
+appear as pins. The distance-sorted table lists them under "distance unknown".
+Fix: geocode the misses (Nominatim failed on a few addresses; try the
+"<city>, GA" fallback), or let a rep drop a pin.
 
-**Task (~1 hour):** open 3–4 known item URLs from different vendors logged-out
-and read which id actually corresponds to the selling dealer shown on the page.
-Then fix the segment index in `scripts/htp-listing-counts.ts`, re-run, and
-re-seed. `data/htp-listing-counts.UNVERIFIED.json` holds the bad output — delete
-it once corrected.
+## 4. Yard phone/address are not editable in the app
+A rep who learns the real number has nowhere to correct the record — only
+contacts can be added. Add inline edit for `phone` and `address` on
+`app/yards/[id]/page.tsx`.
 
-Until then `published_listing_count` stays `null` and `/census` shows the
-concentration tile as "—" with an explicit "not yet measured" note. **Do not
-publish a concentration figure until this is resolved.**
+## 5. Only 12 yards, and only ~7 are independent salvage yards
+The rest are OEM franchise dealers (Rush ×3, Peterbilt of Atlanta, Nextran)
+which will not push a salvage feed, plus LKQ Evans — the incumbent this thesis
+is trying to route around. A rep told to make 40 calls will exhaust the real
+list quickly. The "+ Add yard" button now lets them extend it, but the seeder
+should also be re-run against sources not yet exhausted:
+- 9 of the 20 permitted web-search queries remain.
+- `findtruckservice.com`, `yelp.com` returned **403** — blocked, skipped per
+  SCRAPING_POLICY.md. Do not bypass; a human may read them manually.
+- Georgia Secretary of State registry filtered by NAICS 423140.
 
-## 2. ~~Deploy to Vercel~~ — DONE, but allowlist the redirect URL
-Live at **https://yard-line.vercel.app**, git-connected, auto-deploys on push.
+**Note on market size:** thin coverage is partly real. HeavyTruckParts.net's own
+Atlanta page lists exactly four GA yards (Forest Park, Cartersville, Jackson,
+Athens) out of the 149 yards it says are actively selling nationwide.
 
-**Still required (~2 min):** add `https://yard-line.vercel.app/auth/callback`
-to Supabase → Authentication → Redirect URLs, and set Site URL to the same
-origin. Without it GoTrue falls back to `http://localhost:3000` and every magic
-link breaks. Could not be set or read from the build environment — see
-HANDOFF.md.
-
-## 3. Get the yard count above 10
-Only 10 in-scope yards are seeded. This is partly a real finding (see HANDOFF)
-and partly incomplete discovery. Sources not yet exhausted:
-- The bounded web search used 5 of its 20 queries.
-- `findtruckservice.com` and `yelp.com` both returned **403** — blocked, so
-  skipped per SCRAPING_POLICY.md. Do not bypass; a human can read them manually.
-- Georgia Secretary of State business registry (open data) filtered by NAICS
-  423140 (Motor Vehicle Parts, Used) would likely add real yards with addresses.
-- Trade associations: ATRI, Automotive Recyclers Association GA chapter.
-
-## 4. Move off the shared Supabase project
+## 6. Move off the shared Supabase project
 YardLine's tables live in the `supabase-emerald-island` project because the
 account was at its 2-active-free-project cap. See HANDOFF.md → "Database".
 
-## 5. Contacts are read-only in the UI
-The `contacts` table and its RLS policy exist and the yard page renders
-contacts, but there is no "add contact" form — a rep who learns the parts
-manager's name has nowhere to type it. Add a one-field inline form on
-`/yards/[id]`. (Deferred under the brief's stated cut order.)
+## 7. No offline queue for dispositions
+The intake form survives signal loss (localStorage), but a disposition tap that
+fails only surfaces an inline error. Queue failed writes and retry.
 
-## 6. No offline queue
-If a rep loses signal in a yard's back lot, a disposition tap fails and the
-error only shows inline. The intake form survives this (localStorage), but
-activity logging does not. Queue failed writes in localStorage and retry.
+## 8. Playwright smoke test
+`MANUAL_SMOKE.md` was executed by hand against production. A real Playwright
+spec should replace it.
 
-## 7. Playwright smoke test not run
-`MANUAL_SMOKE.md` documents the seven-step path and it was executed by hand
-against a local production build. A real Playwright spec against the deployed
-URL should replace it once item 2 lands.
+---
+
+## Resolved 2026-08-02
+
+- ~~HeavyTruckParts.net seller id~~ — resolved by reading live item pages. The
+  URL's 3rd-to-last segment is the corporate account, 2nd-to-last is the branch.
+  Measured: 829,525 listings / 97 corporate sellers / 128 locations; top-20
+  share **86%**. `/census` now publishes it.
+- ~~Deploy~~ — live at https://yard-line.vercel.app.
+- ~~Intake silently un-completing itself~~ — the debounced autosave issued a
+  full-row upsert including `completed_at: null`, which could land after
+  `complete()` and blank the timestamp, dropping the call from every census
+  metric. Reproduced against the database (`wiped: true`), fixed by stripping
+  `completed_at`/`completed_by` from the autosave payload and cancelling the
+  pending timer, re-verified (`wiped: false`).
+- ~~Callbacks dated tomorrow~~ — a callback is now due today.
+- ~~Worked yards vanishing from Today~~ — `contacted` stays on the call list.
+- ~~No way to add a yard~~ — "+ Add yard" writes to `yards` as `rep_manual`.
+- ~~Contacts read-only~~ — inline add-contact form.
+- ~~One-tap accidental kill~~ — "Not interested" now confirms.
+- ~~Phone not visible on the call list~~ — printed on every card.

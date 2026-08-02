@@ -25,6 +25,9 @@ function YardDetail({ id }: { id: string }) {
   const [saving, setSaving] = useState<string | null>(null)
   const [note, setNote] = useState('')
   const [err, setErr] = useState<string | null>(null)
+  const [cName, setCName] = useState('')
+  const [cTitle, setCTitle] = useState('')
+  const [cPhone, setCPhone] = useState('')
 
   const load = useCallback(async () => {
     const supabase = createClient()
@@ -50,6 +53,11 @@ function YardDetail({ id }: { id: string }) {
   /** One tap: writes the activity AND advances the stage. No modal. */
   async function logDisposition(d: (typeof DISPOSITIONS)[number]) {
     if (!yard) return
+    // Killing a yard is the one irreversible tap on this screen, and with a
+    // short call list one fat thumb costs a real prospect.
+    if (d.advancesTo === 'dead' && !confirm(`Mark ${yard.name} dead? This removes it from your call list.`)) {
+      return
+    }
     setSaving(d.key)
     setErr(null)
     const supabase = createClient()
@@ -61,11 +69,10 @@ function YardDetail({ id }: { id: string }) {
       type: isVoicemail ? 'voicemail' : 'call',
       disposition: isVoicemail ? 'no_answer' : d.key,
       notes: note.trim() || null,
+      // Due TODAY. "Call me back after ten" is a same-morning callback; dating
+      // it tomorrow hid the hottest lead of the day from the Today view.
       ...(d.key === 'callback'
-        ? {
-            next_action: 'Callback',
-            next_action_due: new Date(Date.now() + 864e5).toISOString().slice(0, 10),
-          }
+        ? { next_action: 'Callback', next_action_due: new Date().toISOString().slice(0, 10) }
         : {}),
     })
 
@@ -169,10 +176,11 @@ function YardDetail({ id }: { id: string }) {
         <h2 className="mb-2 text-sm font-bold uppercase tracking-wide text-slate-400">
           Log the call — one tap
         </h2>
-        <input
+        <textarea
           value={note}
           onChange={(e) => setNote(e.target.value)}
-          placeholder="Optional note (who you spoke to, what they said)"
+          rows={3}
+          placeholder="Who you spoke to, what they said, when to call back…"
           className="mb-2 w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-3 text-base outline-none focus:border-blue-500"
         />
         <div className="grid grid-cols-2 gap-2">
@@ -209,9 +217,60 @@ function YardDetail({ id }: { id: string }) {
         </div>
       </section>
 
-      {contacts.length > 0 && (
-        <section className="mt-6">
-          <h2 className="mb-2 text-sm font-bold uppercase tracking-wide text-slate-400">Contacts</h2>
+      <section className="mt-6">
+        <h2 className="mb-2 text-sm font-bold uppercase tracking-wide text-slate-400">
+          Contacts ({contacts.length})
+        </h2>
+
+        {/* The name and direct line you get on the call are the whole point of
+            the call. Without this there is nowhere to put them. */}
+        <form
+          onSubmit={async (e) => {
+            e.preventDefault()
+            if (!cName.trim() && !cPhone.trim()) return
+            const supabase = createClient()
+            await supabase.from('contacts').insert({
+              yard_id: id,
+              name: cName.trim() || null,
+              title: cTitle.trim() || null,
+              phone: cPhone.trim() || null,
+              is_primary: contacts.length === 0,
+            })
+            setCName('')
+            setCTitle('')
+            setCPhone('')
+            load()
+          }}
+          className="mb-2 grid grid-cols-3 gap-2"
+        >
+          <input
+            value={cName}
+            onChange={(e) => setCName(e.target.value)}
+            placeholder="Name"
+            className="rounded-lg border border-slate-700 bg-slate-900 px-3 py-3 text-base outline-none focus:border-blue-500"
+          />
+          <input
+            value={cTitle}
+            onChange={(e) => setCTitle(e.target.value)}
+            placeholder="Title"
+            className="rounded-lg border border-slate-700 bg-slate-900 px-3 py-3 text-base outline-none focus:border-blue-500"
+          />
+          <input
+            value={cPhone}
+            onChange={(e) => setCPhone(e.target.value)}
+            inputMode="tel"
+            placeholder="Direct line"
+            className="rounded-lg border border-slate-700 bg-slate-900 px-3 py-3 text-base outline-none focus:border-blue-500"
+          />
+          <button
+            type="submit"
+            className="col-span-3 rounded-lg bg-slate-700 px-3 py-3 text-sm font-bold"
+          >
+            Save contact
+          </button>
+        </form>
+
+        {contacts.length > 0 && (
           <ul className="space-y-2">
             {contacts.map((c) => (
               <li
@@ -233,8 +292,8 @@ function YardDetail({ id }: { id: string }) {
               </li>
             ))}
           </ul>
-        </section>
-      )}
+        )}
+      </section>
 
       <section className="mt-6">
         <h2 className="mb-2 text-sm font-bold uppercase tracking-wide text-slate-400">

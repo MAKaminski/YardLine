@@ -216,9 +216,16 @@ function IntakeForm({ id }: { id: string }) {
     async (next: Omit<Intake, 'yard_id'>) => {
       setStatus('saving')
       const supabase = createClient()
+      // NEVER write completed_at/completed_by from the autosave path. This is a
+      // full-row upsert, so including them would blank out a completed
+      // discovery if a debounced save lands after `complete()` — which silently
+      // drops the call from every /census metric. Only complete() sets them.
+      const { completed_at: _ca, completed_by: _cb, ...answers } = next
+      void _ca
+      void _cb
       const { error } = await supabase
         .from('intakes')
-        .upsert({ yard_id: id, ...next }, { onConflict: 'yard_id' })
+        .upsert({ yard_id: id, ...answers }, { onConflict: 'yard_id' })
       if (error) {
         setStatus('error')
         return
@@ -263,7 +270,19 @@ function IntakeForm({ id }: { id: string }) {
     return () => document.removeEventListener('visibilitychange', flush)
   }, [form, lsKey])
 
+  // Drop any pending save on unmount so it can't fire against a stale form.
+  useEffect(() => {
+    return () => {
+      if (timer.current) clearTimeout(timer.current)
+    }
+  }, [])
+
   async function complete() {
+    // Cancel any in-flight debounced save so it cannot land after this write.
+    if (timer.current) {
+      clearTimeout(timer.current)
+      timer.current = null
+    }
     const supabase = createClient()
     const payload = {
       yard_id: id,
