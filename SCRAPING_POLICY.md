@@ -69,6 +69,37 @@ limit issues at our volume (one bbox query per run).
 Used only for records missing coordinates. Hard-limited to **1 request per
 second** with the descriptive User-Agent above, per Nominatim's usage policy.
 
+### Price index — mirrored listing FACTS (decision 2026-08-02)
+
+`scripts/collect-prices.ts` collects individual listing records from
+HeavyTruckParts.net item pages to power the vendor-facing price tool
+(`/v/[token]`), so a yard can be told what its parts are actually worth.
+
+This was an explicit product decision by the operator, taken over a
+recommendation to publish only aggregate statistics. The limits that still
+apply, unchanged:
+
+**Collected (facts):** year, make, model, part type, price, stock/tag number,
+seller city/state, seller name, availability, `source_url`, observation
+timestamp.
+
+**Never collected:** listing descriptions, condition write-ups, marketing prose,
+photographs, or any image URL. The parser reads the `<title>`, the canonical
+URL, and the site's own related-items text; it does not touch the description
+block and stores no media.
+
+**Conduct:** `robots.txt` permits `/item/` and carries no bulk-extraction
+clause. `Crawl-delay: 4` is honored, single-threaded, one host. No `page=`
+parameter is ever sent, so the one wildcard disallow is never touched. The run
+is wall-clock bounded (`--minutes=`), not unbounded.
+
+**Attribution:** every row keeps `source_url`, and every price shown to a vendor
+links back to the originating listing.
+
+**Presentation:** the vendor tool states its coverage plainly — how many
+listings the index holds and when they were observed — so a yard is never
+misled into thinking a thin sample is the whole market.
+
 ## Data integrity rule
 
 **Never fabricate a yard, a phone number, or a listing count.** An empty field
