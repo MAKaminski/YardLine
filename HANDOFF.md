@@ -187,19 +187,32 @@ revealed preference, which is a far stronger feed signal than answering "yes" to
 question 8. `/census` counts these under **Handed over inventory**.
 
 ### What's in the index right now
-**1,337 priced listings** collected 2026-08-02, 58 makes, 122 part types.
-Median listing $500 (p25 $300, p75 $1,176). Coverage by family: electronics/ECMs
-167, cabs 116, hoods 114, aftertreatment/DPF 83, axles/suspension 65,
-rears/differentials 62, transmissions 61, engines 57, turbos 36, other 576.
+**1,808 priced listings**, 67 makes, 133 part types, collected 2026-08-02 over
+two crawl runs.
 
-Live examples it can already answer:
-- Freightliner hoods — n=25, median **$1,475** (p25 $1,148 / p75 $1,750)
-- Cabs, all makes — n=117, median **$2,000** (p25 $1,200 / p75 $3,500)
+| Family | Listings | Median | Range |
+|---|---:|---:|---|
+| transmissions | 206 | $1,250 | $34 – $15,000 |
+| rears/differentials | 197 | $1,067 | $13 – $4,500 |
+| engines | 175 | $2,750 | $5 – $45,000 |
+| electronics/ECMs | 163 | $400 | $40 – $2,500 |
+| cabs | 110 | $2,000 | $50 – $13,250 |
+| hoods | 109 | $1,350 | $40 – $5,500 |
+| aftertreatment/DPF | 81 | $400 | $8 – $6,500 |
+| axles/suspension | 59 | $1,000 | $73 – $3,800 |
+| turbos | 36 | $475 | $71 – $4,140 |
+| other | 672 | $400 | $200 – $6,850 |
 
-Thin spots to be aware of: engines (57) and transmissions (61) are the two
-families the census cares most about and are the least covered, because HTP's
-sitemap is dominated by body panels. A second collector run weighted toward
-those two would fix it.
+Live examples it answers today:
+- **Detroit engines** — n=33, median **$6,350** (p25 $2,500 / p75 $7,850); a
+  2014 DD15 assembly lists at $14,000
+- **Transmissions, all makes** — n=211, median **$1,250** (p25 $800 / p75 $1,835)
+- **Freightliner hoods** — n=25, median **$1,475**
+
+**Read medians, not extremes.** Family is assigned from the part-type slug, so
+"Engine Mount" lands in `engines` alongside "Engine Assembly" — which is why the
+engine range starts at $5. The medians are sound; the min/max are not a price
+range for a whole unit. A thin `n` means directional only.
 
 ### Where the prices come from
 Mirrored public listing facts from HeavyTruckParts.net item pages: year, make,

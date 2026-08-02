@@ -2,16 +2,11 @@
 
 Ranked. Top item is census-critical.
 
-## 1. Price index is thin on engines and transmissions
-1,337 listings loaded, but only 57 engines and 61 transmissions — the two
-families the census cares most about. HTP's sitemap is dominated by body panels,
-so a plain round-robin under-samples them. Fix: run the collector again with the
-family filter narrowed to engines/transmissions/rears only. It is idempotent and
-now checkpoints every 25 pages.
-
-```bash
-pnpm dlx tsx scripts/collect-prices.ts --minutes=60
-```
+## 1. Part-family assignment is coarse
+Family comes from the part-type slug, so "Engine Mount" and "Engine Assembly"
+both land in `engines`. Medians survive it but ranges are misleading (engines
+span $5–$45,000). Fix: split assemblies from components, either by a slug
+allow-list per family or by a price-floor heuristic per family.
 
 ## 2. No "Next yard" control; Today loses scroll position
 `app/yards/[id]/page.tsx` has no way to advance to the next call. Going back
@@ -79,3 +74,5 @@ spec should replace it.
 - ~~Contacts read-only~~ — inline add-contact form.
 - ~~One-tap accidental kill~~ — "Not interested" now confirms.
 - ~~Phone not visible on the call list~~ — printed on every card.
+- ~~Price index thin on drivetrain~~ — a second, family-filtered run took
+  engines 57→175, transmissions 61→206, rears 62→197. Index now 1,808 listings.
