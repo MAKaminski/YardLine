@@ -146,6 +146,65 @@ insert into allowed_emails (email) values ('newrep@company.com') on conflict do 
 
 ---
 
+## Two ways to collect a census row
+
+### 1. By phone (v1)
+The six-step call flow below. Highest-quality evidence — a rep verified it.
+
+### 2. By link, no call (v2)
+Every yard has a permanent tokenized URL. Nobody logs in, no account, no
+password, and **it does not touch Supabase auth email**, so it is unaffected by
+the 2-emails/hour limit.
+
+- `/i/<public_token>` — the same eleven census questions, self-serve.
+- `/v/<public_token>` — the vendor price tool (below). This is the *hook*: lead
+  with what their parts are worth, then ask the eleven questions.
+
+On any yard page there is now an email field and an **Email intake** button.
+It sends the link via the Resend API. If `RESEND_API_KEY` is not configured it
+instead opens the rep's own mail client with the message prefilled, so the
+feature works with zero setup.
+
+Answers arriving this way are stored with `completed_via='self_serve'` and
+`/census` reports them **separately** from rep-verified rows. A yard answering
+its own survey is weaker evidence than a rep on the phone; do not blur them.
+
+---
+
+## The vendor price tool — what makes a yard answer
+
+`/v/<public_token>` gives a yard something before asking for anything:
+
+- **Look up a part** — make / model / part type returns median, 25th, 75th
+  percentile and n, plus the actual comparable listings. Every price links back
+  to the listing it came from.
+- **Price my list** — the yard pastes up to 40 lines of inventory and gets an
+  indicative value.
+
+That second box is the most important instrument in the whole product. A yard
+that pastes a real parts list has *demonstrated* it will hand inventory over —
+revealed preference, which is a far stronger feed signal than answering "yes" to
+question 8. `/census` counts these under **Handed over inventory**.
+
+### Where the prices come from
+Mirrored public listing facts from HeavyTruckParts.net item pages: year, make,
+model, part type, price, stock number, seller city/state, availability, and the
+source URL. **No descriptions, no photographs.** `Crawl-delay: 4` honored. See
+SCRAPING_POLICY.md → "Price index".
+
+The index is a **sample, not the whole market**, and the vendor page says so on
+screen with the live count and collection date. Refresh or extend it with:
+
+```bash
+pnpm dlx tsx scripts/collect-prices.ts --minutes=60
+# then apply supabase/seed-parts.sql
+```
+
+Re-runs are idempotent (unique on source + stock number) and the sitemap is
+cached, so a second run spends all its time on new pages.
+
+---
+
 ## Rep quickstart — the six steps of a call
 
 1. Open **Today**. The list is sorted by published inventory, biggest first.
