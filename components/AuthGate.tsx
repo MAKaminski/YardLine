@@ -11,6 +11,15 @@ const TABS = [
   { href: '/census', label: 'Census' },
 ]
 
+// Tie PostHog events to the signed-in rep. The snippet in app/layout.tsx exposes
+// window.posthog; skip when it is missing or already identified as this email.
+function identifyInPostHog(email: string | null | undefined) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const ph = (window as any).posthog
+  if (!email || !ph?.identify || ph.get_distinct_id?.() === email) return
+  ph.identify(email, { email })
+}
+
 export default function AuthGate({ children }: { children: React.ReactNode }) {
   const router = useRouter()
   const pathname = usePathname()
@@ -21,11 +30,13 @@ export default function AuthGate({ children }: { children: React.ReactNode }) {
     const supabase = createClient()
     supabase.auth.getSession().then(({ data }) => {
       setEmail(data.session?.user.email ?? null)
+      identifyInPostHog(data.session?.user.email)
       setReady(true)
       if (!data.session) router.replace('/login')
     })
     const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
       setEmail(session?.user.email ?? null)
+      identifyInPostHog(session?.user.email)
       if (!session) router.replace('/login')
     })
     return () => sub.subscription.unsubscribe()
